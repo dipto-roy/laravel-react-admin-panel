@@ -9,7 +9,7 @@ import { RiResetLeftFill } from "react-icons/ri";
 
 const Table = () => {
     const items = ["Name", "Phone", "Email", "Status", "Actions"];
-    const tableData=[
+    const tableData = [
         { id: 1, name: "DROBO", phone: "+880111111", email: "drobo@example.com", status: "Active" },
         { id: 2, name: "Bijit", phone: "+880111112", email: "bijit@example.com", status: "Inactive" },
         { id: 3, name: "Minhaj", phone: "+880111113", email: "minhaj@example.com", status: "Inactive" },
@@ -62,14 +62,7 @@ const Table = () => {
     };
 
 
-    useEffect(() => {
-        setRows(
-            tableData.map((row) => ({
-                status: "Active",
-                ...row,
-            }))
-        );
-    }, [tableData]);
+
 
     useEffect(() => {
         const handleClickOutside = (e) => {

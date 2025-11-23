@@ -64,14 +64,7 @@ const Course = () => {
     };
 
 
-    useEffect(() => {
-        setRows(
-            tableData.map((row) => ({
-                status: "Active",
-                ...row,
-            }))
-        );
-    }, [tableData]);
+
 
     useEffect(() => {
         const handleClickOutside = (e) => {
