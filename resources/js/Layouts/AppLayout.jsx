@@ -182,6 +182,41 @@ export default function AppLayout({ children }) {
                             </li>
                         </ul>
                     </li>
+
+                    <li className="group/item relative font-medium text-base text-primary-content">
+                        <span className="flex items-center gap-1 p-2 rounded-md transition-colors duration-300 group-hover/item:bg-secondary cursor-pointer">
+                            Settings
+                            <IoIosArrowDown className="block group-hover/item:hidden transition-transform duration-300" />
+                            <IoIosArrowUp className="hidden group-hover/item:block transition-transform duration-300" />
+                        </span>
+
+                        <ul className="absolute top-10 left-0 p-2 bg-base-200 rounded-md text-primary-content shadow-lg z-20 transform origin-top opacity-0 scale-y-0 translate-y-2 transition-all duration-300 ease-out group-hover/item:opacity-100 group-hover/item:scale-y-100 group-hover/item:translate-y-0">
+                            <li>
+                                <Link
+                                    href="/district"
+                                    className="block min-w-40 p-2 rounded-md hover:bg-secondary transition-colors"
+                                >
+                                    District
+                                </Link>
+                            </li>
+                            <li>
+                                <Link
+                                    href="/upazila"
+                                    className="block min-w-40 p-2 rounded-md hover:bg-secondary transition-colors"
+                                >
+                                    Upazila
+                                </Link>
+                            </li>
+                            <li>
+                                <Link
+                                    href="/zone"
+                                    className="block min-w-40 p-2 rounded-md hover:bg-secondary transition-colors"
+                                >
+                                    Zone
+                                </Link>
+                            </li>
+                        </ul>
+                    </li>
                 </ul>
 
                 <div className="navbar-end flex items-center gap-3">
@@ -467,6 +502,34 @@ export default function AppLayout({ children }) {
                                 onClick={() => setSidebarOpen(false)}
                             >
                                 Subject
+                            </Link>
+                        </li>
+                        <li className="pt-4 border-t border-base-300">
+                            <p className="text-xs font-semibold text-gray-500 mb-2">Settings</p>
+                            <Link
+                                href="/district"
+                                className="block p-2 rounded-md hover:bg-secondary transition-colors"
+                                onClick={() => setSidebarOpen(false)}
+                            >
+                                District
+                            </Link>
+                        </li>
+                        <li>
+                            <Link
+                                href="/upazila"
+                                className="block p-2 rounded-md hover:bg-secondary transition-colors"
+                                onClick={() => setSidebarOpen(false)}
+                            >
+                                Upazila
+                            </Link>
+                        </li>
+                        <li>
+                            <Link
+                                href="/zone"
+                                className="block p-2 rounded-md hover:bg-secondary transition-colors"
+                                onClick={() => setSidebarOpen(false)}
+                            >
+                                Zone
                             </Link>
                         </li>
                     </ul>

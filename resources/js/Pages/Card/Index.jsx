@@ -2,15 +2,17 @@ import AppLayout from '../../Layouts/AppLayout';
 import { Head, useForm } from '@inertiajs/react';
 import { useState } from 'react';
 import { toast } from 'react-toastify';
-import { FiUpload, FiX } from 'react-icons/fi';
+import { FiUpload, FiX, FiEdit2, FiTrash2 } from 'react-icons/fi';
 
 export default function Card({ students, pagination }) {
     const [openAdd, setOpenAdd] = useState(false);
+    const [isEditMode, setIsEditMode] = useState(false);
+    const [editingId, setEditingId] = useState(null);
     const [currentPage, setCurrentPage] = useState(pagination?.current_page || 1);
     const totalPages = pagination?.last_page || 1;
     const [imagePreview, setImagePreview] = useState(null);
 
-    const { data, setData, post, processing, errors, reset } = useForm({
+    const { data, setData, post, put, delete: destroy, processing, errors, reset } = useForm({
         name: '',
         email: '',
         phone: '',
@@ -39,22 +41,89 @@ export default function Card({ students, pagination }) {
 
     const handleSubmit = (e) => {
         e.preventDefault();
-        post('/card', {
-            forceFormData: true,
-            onSuccess: () => {
-                toast.success('Card created successfully!');
-                reset();
-                setImagePreview(null);
-                setOpenAdd(false);
-            },
-            onError: (errors) => {
-                if (errors.email) {
-                    toast.error('This email is already registered!');
-                } else {
-                    toast.error('Failed to create card. Please check all fields.');
-                }
-            },
+        
+        if (isEditMode) {
+            post(`/card/${editingId}`, {
+                forceFormData: true,
+                _method: 'put',
+                onSuccess: () => {
+                    toast.success('Card updated successfully!');
+                    reset();
+                    setImagePreview(null);
+                    setOpenAdd(false);
+                    setIsEditMode(false);
+                    setEditingId(null);
+                },
+                onError: (errors) => {
+                    if (errors.email) {
+                        toast.error('This email is already registered!');
+                    } else {
+                        toast.error('Failed to update card. Please check all fields.');
+                    }
+                },
+            });
+        } else {
+            post('/card', {
+                forceFormData: true,
+                onSuccess: () => {
+                    toast.success('Card created successfully!');
+                    reset();
+                    setImagePreview(null);
+                    setOpenAdd(false);
+                },
+                onError: (errors) => {
+                    if (errors.email) {
+                        toast.error('This email is already registered!');
+                    } else {
+                        toast.error('Failed to create card. Please check all fields.');
+                    }
+                },
+            });
+        }
+    };
+
+    const handleEdit = (card) => {
+        setData({
+            name: card.name,
+            email: card.email,
+            phone: card.phone,
+            dob: card.dob || '',
+            gender: card.gender || '',
+            department: card.department || '',
+            proficiency: card.proficiency || '',
+            destination: card.destination || '',
+            address: card.address || '',
+            sscGpa: card.sscGpa || '',
+            hscGpa: card.hscGpa || '',
+            image: null,
         });
+        if (card.image) {
+            setImagePreview(`/${card.image}`);
+        }
+        setEditingId(card.id);
+        setIsEditMode(true);
+        setOpenAdd(true);
+    };
+
+    const handleDelete = (id) => {
+        if (confirm('Are you sure you want to delete this card?')) {
+            destroy(`/card/${id}`, {
+                onSuccess: () => {
+                    toast.success('Card deleted successfully!');
+                },
+                onError: () => {
+                    toast.error('Failed to delete card');
+                },
+            });
+        }
+    };
+
+    const closeModal = () => {
+        setOpenAdd(false);
+        setIsEditMode(false);
+        setEditingId(null);
+        setImagePreview(null);
+        reset();
     };
 
     const handlePageChange = (page) => {
@@ -163,11 +232,19 @@ export default function Card({ students, pagination }) {
                             </div>
 
                             <div className="flex gap-2 p-4 sm:p-5">
-                                <button className="w-full bg-primary hover:bg-primary-hover text-secondary-content cursor-pointer font-semibold py-2 px-3 rounded transition-colors text-sm sm:text-base">
-                                    View
+                                <button 
+                                    onClick={() => handleEdit(data)}
+                                    className="flex-1 bg-primary/10 text-primary hover:bg-primary hover:text-white px-3 py-2 rounded transition-colors flex items-center justify-center gap-2 font-medium text-sm"
+                                >
+                                    <FiEdit2 size={16} />
+                                    Edit
                                 </button>
-                                <button className="w-full bg-primary-light hover:bg-primary-light/80 text-primary font-semibold cursor-pointer py-2 px-3 rounded transition-colors text-sm sm:text-base">
-                                    Login
+                                <button 
+                                    onClick={() => handleDelete(data.id)}
+                                    className="flex-1 bg-error/10 text-error hover:bg-error hover:text-white px-3 py-2 rounded transition-colors flex items-center justify-center gap-2 font-medium text-sm"
+                                >
+                                    <FiTrash2 size={16} />
+                                    Delete
                                 </button>
                             </div>
                         </div>
@@ -209,22 +286,18 @@ export default function Card({ students, pagination }) {
                 </div>
             </div>
 
-            {/* Add Modal - Fully Responsive */}
+            {/* Add/Edit Modal - Fully Responsive */}
             {openAdd && (
                 <div className="fixed inset-0 bg-black/60 backdrop-blur-sm z-50 flex items-center justify-center p-2 sm:p-4">
                     <div className="bg-base-200 rounded-xl max-w-6xl w-full max-h-[98vh] sm:max-h-[95vh] overflow-hidden shadow-2xl animate-fadeIn">
                         {/* Modal Header - Sticky */}
                         <div className="sticky top-0 bg-gradient-to-r from-primary to-primary-hover z-10 flex items-center justify-between p-4 sm:p-5 shadow-lg">
                             <h2 className="text-lg sm:text-xl md:text-2xl font-bold text-white flex items-center gap-2">
-                                <span className="hidden sm:inline">📋</span>
-                                Create New Student Card
+                                <span className="hidden sm:inline">{isEditMode ? '✏️' : '📋'}</span>
+                                {isEditMode ? 'Edit Student Card' : 'Create New Student Card'}
                             </h2>
                             <button
-                                onClick={() => {
-                                    setOpenAdd(false);
-                                    setImagePreview(null);
-                                    reset();
-                                }}
+                                onClick={closeModal}
                                 className="text-2xl sm:text-3xl text-white hover:text-error hover:rotate-90 transition-all duration-300 p-1 rounded-full hover:bg-white/20"
                                 aria-label="Close modal"
                             >
@@ -468,11 +541,7 @@ export default function Card({ students, pagination }) {
                         <div className="sticky bottom-0 bg-gradient-to-t from-base-200 to-transparent backdrop-blur-sm flex flex-col sm:flex-row justify-end gap-3 p-4 sm:p-5 border-t-2 border-accent/30 shadow-lg">
                             <button
                                 type="button"
-                                onClick={() => {
-                                    setOpenAdd(false);
-                                    setImagePreview(null);
-                                    reset();
-                                }}
+                                onClick={closeModal}
                                 className="w-full sm:w-auto px-6 sm:px-8 py-2.5 sm:py-3 bg-secondary hover:bg-secondary/80 text-primary-content rounded-lg transition-all duration-300 font-semibold text-sm sm:text-base shadow-md hover:shadow-lg"
                             >
                                 ✕ Cancel
@@ -489,10 +558,10 @@ export default function Card({ students, pagination }) {
                                             <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
                                             <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
                                         </svg>
-                                        Creating...
+                                        {isEditMode ? 'Updating...' : 'Creating...'}
                                     </span>
                                 ) : (
-                                    '✓ Create Card'
+                                    isEditMode ? '✓ Update Card' : '✓ Create Card'
                                 )}
                             </button>
                         </div>

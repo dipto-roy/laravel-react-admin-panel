@@ -8,6 +8,9 @@ use App\Http\Controllers\CourseController;
 use App\Http\Controllers\ClassController;
 use App\Http\Controllers\DepartmentController;
 use App\Http\Controllers\SubjectController;
+use App\Http\Controllers\DistrictController;
+use App\Http\Controllers\UpazilaController;
+use App\Http\Controllers\ZoneController;
 use Illuminate\Foundation\Application;
 use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
@@ -82,6 +85,11 @@ Route::middleware(['auth'])->group(function () {
     Route::resource('class', ClassController::class);
     Route::resource('department', DepartmentController::class);
     Route::resource('subject', SubjectController::class);
+
+    // Settings Modules
+    Route::resource('district', DistrictController::class);
+    Route::resource('upazila', UpazilaController::class);
+    Route::resource('zone', ZoneController::class);
 
     // Settings
     Route::get('/settings', function () {
