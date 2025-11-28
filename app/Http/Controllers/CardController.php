@@ -18,8 +18,12 @@ class CardController extends Controller
         // Fetch cards with pagination
         $students = Card::paginate($perPage);
 
+        // Fetch departments for dropdown
+        $departments = \App\Models\Department::select('id', 'name')->where('is_active', true)->orderBy('name')->get();
+
         return Inertia::render('Card/Index', [
             'students' => $students->items(),
+            'departments' => $departments,
             'pagination' => [
                 'current_page' => $students->currentPage(),
                 'last_page' => $students->lastPage(),

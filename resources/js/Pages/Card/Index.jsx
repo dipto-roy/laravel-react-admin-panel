@@ -4,13 +4,16 @@ import { useState } from 'react';
 import { toast } from 'react-toastify';
 import { FiUpload, FiX, FiEdit2, FiTrash2 } from 'react-icons/fi';
 
-export default function Card({ students, pagination }) {
+export default function Card({ students, pagination, departments }) {
     const [openAdd, setOpenAdd] = useState(false);
     const [isEditMode, setIsEditMode] = useState(false);
     const [editingId, setEditingId] = useState(null);
     const [currentPage, setCurrentPage] = useState(pagination?.current_page || 1);
     const totalPages = pagination?.last_page || 1;
     const [imagePreview, setImagePreview] = useState(null);
+
+    // Debug log to check departments
+    console.log('Departments received:', departments);
 
     const { data, setData, post, put, delete: destroy, processing, errors, reset } = useForm({
         name: '',
@@ -456,11 +459,11 @@ export default function Card({ students, pagination }) {
                                             className="w-full h-11 sm:h-12 px-4 rounded-lg border-2 border-accent focus:border-primary focus:ring-2 focus:ring-primary/20 outline-none transition-all bg-base-200 text-primary-content cursor-pointer"
                                         >
                                             <option value="">Select Department</option>
-                                            <option value="Science">Science</option>
-                                            <option value="Arts">Arts</option>
-                                            <option value="Commerce">Commerce</option>
-                                            <option value="Engineering">Engineering</option>
-                                            <option value="Business">Business</option>
+                                            {departments?.map((dept) => (
+                                                <option key={dept.id} value={dept.name}>
+                                                    {dept.name}
+                                                </option>
+                                            ))}
                                         </select>
                                     </div>
 
