@@ -1,0 +1,8 @@
+@import 'tailwindcss';
+@plugin 'daisyui';
+
+/* Custom Theme */
+@theme {
+  --color-primary: #570DF8;
+  --color-primary-hover: #4506CB;
+}

@@ -8,9 +8,9 @@
     --color-secondary: #E1E1E4;
     --color-secondary-content: #FFFFFF;
     --color-accent: #E5E7EB;
-    --color-accent-content: #E5E7EB;
+    --color-accent-content: #1F2937;
     --color-neutral: #F6F5F4;
-    --color-neutral-content: #FFFFFF;
+    --color-neutral-content: #000000;
     --color-base-100: #F7F5F3;
     --color-base-200: #FFFFFF;
     --color-base-300: #F2EFED;
@@ -20,7 +20,7 @@
     --color-success: #4CAF50;
     --color-success-content: #FFFFFF;
     --color-warning: #FBBD23;
-    --color-warning-content: #FFFFFF;
+    --color-warning-content: #78350F;
     --color-error: #fb2c36e8;
     --color-error-content: #FFFFFF;
 }
@@ -32,45 +32,45 @@
     --color-primary-content: var(--color-primary-content);
 
     --color-secondary: var(--color-secondary);
-    --color-secondary-light: ;
-    --color-secondary-hover: ;
+    --color-secondary-light: #F5F5F5;
+    --color-secondary-hover: #D1D1D4;
     --color-secondary-content: var(--color-secondary-content);
 
     --color-accent: var(--color-accent);
-    --color-accent-light: ;
-    --color-accent-hover: ;
-    --color-accent-content: var(--color-accent-content);
+    --color-accent-light: #F3F4F6;
+    --color-accent-hover: #D1D5DB;
+    --color-accent-content: #1F2937;
 
     --color-neutral: var(--color-neutral);
-    --color-neutral-light: ;
-    --color-neutral-hover: ;
+    --color-neutral-light: #FAFAF9;
+    --color-neutral-hover: #E7E5E4;
     --color-neutral-content: var(--color-neutral-content);
 
     --color-base-content: var(--color-base-content);
     --color-info: var(--color-info);
-    --color-info-light: ;
-    --color-info-hover: ;
+    --color-info-light: #D1FAE5;
+    --color-info-hover: #10B981;
     --color-info-content: var(--color-info-content);
 
     --color-success: var(--color-success);
-    --color-success-light: ;
-    --color-success-hover: ;
+    --color-success-light: #D1FAE5;
+    --color-success-hover: #16A34A;
     --color-success-content: var(--color-success-content);
 
     --color-warning: var(--color-warning);
-    --color-warning-light: ;
-    --color-warning-hover: ;
-    --color-warning-content: var(--color-warning-content);
+    --color-warning-light: #FEF3C7;
+    --color-warning-hover: #F59E0B;
+    --color-warning-content: #78350F;
 
     --color-error: var(--color-error);
-    --color-error-light: ;
-    --color-error-hover: ;
+    --color-error-light: #FEE2E2;
+    --color-error-hover: #DC2626;
     --color-error-content: var(--color-error-content);
 
-    --color-dark: #2A2E42 var(--color-dark);
+    --color-dark: #2A2E42;
     --color-dark-light: #DEDEE2;
-    --color-dark-hover: #DEDEE2;
-    --color-dark-content: #FFFFFF var(--color-dark-content);
+    --color-dark-hover: #1F2230;
+    --color-dark-content: #FFFFFF;
 }
 
 .date-wrapper {
@@ -219,4 +219,39 @@
     font-size: 1.5rem;
     font-weight: bold;
     margin-bottom: 0.5rem;
+}
+
+/* Custom animations for modal */
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+        transform: scale(0.95);
+    }
+    to {
+        opacity: 1;
+        transform: scale(1);
+    }
+}
+
+.animate-fadeIn {
+    animation: fadeIn 0.3s ease-out;
+}
+
+/* Smooth scrollbar for modal */
+.overflow-y-auto::-webkit-scrollbar {
+    width: 8px;
+}
+
+.overflow-y-auto::-webkit-scrollbar-track {
+    background: var(--color-secondary);
+    border-radius: 10px;
+}
+
+.overflow-y-auto::-webkit-scrollbar-thumb {
+    background: var(--color-primary);
+    border-radius: 10px;
+}
+
+.overflow-y-auto::-webkit-scrollbar-thumb:hover {
+    background: var(--color-primary-hover);
 }

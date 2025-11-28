@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { FiUpload, FiX } from "react-icons/fi";
 
 
 const Card = () => {
@@ -274,6 +275,62 @@ const Card = () => {
     const [openAdd, setOpenAdd] = useState(false);
     const [currentPage, setCurrentPage] = useState(1);
     const [totalPages, setTotalPages] = useState(10);
+    const [imagePreview, setImagePreview] = useState(null);
+    const [formData, setFormData] = useState({
+        name: "",
+        email: "",
+        phone: "",
+        dob: "",
+        gender: "",
+        department: "",
+        proficiency: "",
+        destination: "",
+        address: "",
+        sscGpa: "",
+        hscGpa: "",
+        image: null
+    });
+
+    const handleImageUpload = (e) => {
+        const file = e.target.files[0];
+        if (file) {
+            setFormData({ ...formData, image: file });
+            const reader = new FileReader();
+            reader.onloadend = () => {
+                setImagePreview(reader.result);
+            };
+            reader.readAsDataURL(file);
+        }
+    };
+
+    const handleInputChange = (e) => {
+        const { name, value } = e.target;
+        setFormData({ ...formData, [name]: value });
+    };
+
+    const handleSubmit = (e) => {
+        e.preventDefault();
+        // Here you would typically send the form data to your backend
+        console.log("Form Data:", formData);
+        console.log("Image:", formData.image);
+        // Reset form
+        setOpenAdd(false);
+        setImagePreview(null);
+        setFormData({
+            name: "",
+            email: "",
+            phone: "",
+            dob: "",
+            gender: "",
+            department: "",
+            proficiency: "",
+            destination: "",
+            address: "",
+            sscGpa: "",
+            hscGpa: "",
+            image: null
+        });
+    };
 
     const handlePageChange = (page) => {
         if (page >= 1 && page <= totalPages) {
@@ -290,6 +347,238 @@ const Card = () => {
                     Create Card
                 </button>
             </div>
+
+            {/* Create Card Modal */}
+            {openAdd && (
+                <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4">
+                    <div className="bg-base-200 rounded-lg shadow-lg max-w-4xl w-full max-h-[90vh] overflow-y-auto">
+                        <div className="sticky top-0 bg-base-200 border-b border-accent p-4 flex justify-between items-center">
+                            <h2 className="text-xl font-bold text-primary-content">Create New Card</h2>
+                            <button
+                                onClick={() => {
+                                    setOpenAdd(false);
+                                    setImagePreview(null);
+                                }}
+                                className="text-error hover:text-error-hover text-2xl"
+                            >
+                                <FiX />
+                            </button>
+                        </div>
+
+                        <form onSubmit={handleSubmit} className="p-6">
+                            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                                {/* Image Upload Section */}
+                                <div className="md:col-span-2">
+                                    <label className="labelClass">Profile Image</label>
+                                    <div className="mt-2">
+                                        {imagePreview ? (
+                                            <div className="relative w-40 h-52 mx-auto">
+                                                <img
+                                                    src={imagePreview}
+                                                    alt="Preview"
+                                                    className="w-full h-full object-cover rounded-lg"
+                                                />
+                                                <label className="absolute inset-0 bg-black/50 flex items-center justify-center opacity-0 hover:opacity-100 transition-opacity cursor-pointer rounded-lg">
+                                                    <FiUpload className="text-white text-3xl" />
+                                                    <input
+                                                        type="file"
+                                                        accept="image/*"
+                                                        onChange={handleImageUpload}
+                                                        className="hidden"
+                                                    />
+                                                </label>
+                                            </div>
+                                        ) : (
+                                            <label className="w-40 h-52 mx-auto border-2 border-dashed border-primary rounded-lg flex flex-col items-center justify-center cursor-pointer hover:bg-secondary/50 transition-colors">
+                                                <FiUpload className="text-primary text-4xl mb-2" />
+                                                <span className="text-primary-content text-sm">Upload Image</span>
+                                                <input
+                                                    type="file"
+                                                    accept="image/*"
+                                                    onChange={handleImageUpload}
+                                                    className="hidden"
+                                                />
+                                            </label>
+                                        )}
+                                    </div>
+                                </div>
+
+                                {/* Name */}
+                                <div>
+                                    <label className="labelClass">Name *</label>
+                                    <input
+                                        type="text"
+                                        name="name"
+                                        value={formData.name}
+                                        onChange={handleInputChange}
+                                        className="inputClass"
+                                        required
+                                    />
+                                </div>
+
+                                {/* Email */}
+                                <div>
+                                    <label className="labelClass">Email *</label>
+                                    <input
+                                        type="email"
+                                        name="email"
+                                        value={formData.email}
+                                        onChange={handleInputChange}
+                                        className="inputClass"
+                                        required
+                                    />
+                                </div>
+
+                                {/* Phone */}
+                                <div>
+                                    <label className="labelClass">Phone *</label>
+                                    <input
+                                        type="tel"
+                                        name="phone"
+                                        value={formData.phone}
+                                        onChange={handleInputChange}
+                                        className="inputClass"
+                                        required
+                                    />
+                                </div>
+
+                                {/* Date of Birth */}
+                                <div>
+                                    <label className="labelClass">Date of Birth *</label>
+                                    <input
+                                        type="date"
+                                        name="dob"
+                                        value={formData.dob}
+                                        onChange={handleInputChange}
+                                        className="inputClass"
+                                        required
+                                    />
+                                </div>
+
+                                {/* Gender */}
+                                <div>
+                                    <label className="labelClass">Gender *</label>
+                                    <select
+                                        name="gender"
+                                        value={formData.gender}
+                                        onChange={handleInputChange}
+                                        className="inputClass"
+                                        required
+                                    >
+                                        <option value="">Select Gender</option>
+                                        <option value="Male">Male</option>
+                                        <option value="Female">Female</option>
+                                        <option value="Other">Other</option>
+                                    </select>
+                                </div>
+
+                                {/* Department */}
+                                <div>
+                                    <label className="labelClass">Department *</label>
+                                    <select
+                                        name="department"
+                                        value={formData.department}
+                                        onChange={handleInputChange}
+                                        className="inputClass"
+                                        required
+                                    >
+                                        <option value="">Select Department</option>
+                                        <option value="Science">Science</option>
+                                        <option value="Arts">Arts</option>
+                                        <option value="Commerce">Commerce</option>
+                                    </select>
+                                </div>
+
+                                {/* Proficiency */}
+                                <div>
+                                    <label className="labelClass">Proficiency</label>
+                                    <input
+                                        type="text"
+                                        name="proficiency"
+                                        value={formData.proficiency}
+                                        onChange={handleInputChange}
+                                        className="inputClass"
+                                        placeholder="e.g., IELTS, TOEFL"
+                                    />
+                                </div>
+
+                                {/* Destination */}
+                                <div>
+                                    <label className="labelClass">Destination</label>
+                                    <input
+                                        type="text"
+                                        name="destination"
+                                        value={formData.destination}
+                                        onChange={handleInputChange}
+                                        className="inputClass"
+                                        placeholder="e.g., USA, UK, Canada"
+                                    />
+                                </div>
+
+                                {/* Address */}
+                                <div>
+                                    <label className="labelClass">Address *</label>
+                                    <input
+                                        type="text"
+                                        name="address"
+                                        value={formData.address}
+                                        onChange={handleInputChange}
+                                        className="inputClass"
+                                        required
+                                    />
+                                </div>
+
+                                {/* SSC GPA */}
+                                <div>
+                                    <label className="labelClass">SSC GPA</label>
+                                    <input
+                                        type="text"
+                                        name="sscGpa"
+                                        value={formData.sscGpa}
+                                        onChange={handleInputChange}
+                                        className="inputClass"
+                                        placeholder="e.g., 5.00"
+                                    />
+                                </div>
+
+                                {/* HSC GPA */}
+                                <div>
+                                    <label className="labelClass">HSC GPA</label>
+                                    <input
+                                        type="text"
+                                        name="hscGpa"
+                                        value={formData.hscGpa}
+                                        onChange={handleInputChange}
+                                        className="inputClass"
+                                        placeholder="e.g., 5.00"
+                                    />
+                                </div>
+                            </div>
+
+                            {/* Action Buttons */}
+                            <div className="flex gap-4 mt-6 justify-end">
+                                <button
+                                    type="button"
+                                    onClick={() => {
+                                        setOpenAdd(false);
+                                        setImagePreview(null);
+                                    }}
+                                    className="px-6 py-2 bg-secondary text-primary-content rounded hover:bg-secondary/80 transition-colors"
+                                >
+                                    Cancel
+                                </button>
+                                <button
+                                    type="submit"
+                                    className="px-6 py-2 bg-primary text-white rounded hover:bg-primary-hover transition-colors"
+                                >
+                                    Create Card
+                                </button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            )}
+
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5">
                 {students?.map((data, i) => (
                     <div key={i} className="bg-base-200 shadow-box  hover:scale-102 transition-transform duration-300 flex flex-col justify-between rounded-lg overflow-hidden">

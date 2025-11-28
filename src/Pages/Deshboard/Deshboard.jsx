@@ -1,7 +1,21 @@
-
+import { useState } from "react";
+import { FiUpload } from "react-icons/fi";
 
 const Deshboard = () => {
+    const [uploadedImage, setUploadedImage] = useState(null);
+    const [imagePreview, setImagePreview] = useState(null);
 
+    const handleImageUpload = (e) => {
+        const file = e.target.files[0];
+        if (file) {
+            setUploadedImage(file);
+            const reader = new FileReader();
+            reader.onloadend = () => {
+                setImagePreview(reader.result);
+            };
+            reader.readAsDataURL(file);
+        }
+    };
 
     return (
         <div className="p-5 space-y-5">
@@ -41,12 +55,38 @@ const Deshboard = () => {
                             </div>
                         </div>
 
-                        {/* 3D Sphere Image */}
-                        <img
-                            src="/mnt/data/47ed2eb0-d4fe-46c2-b9b4-2b316cc53a20.png"
-                            className="absolute right-8 bottom-6 w-48 drop-shadow-lg"
-                            alt="3D Sphere"
-                        />
+                        {/* 3D Sphere Image with Upload */}
+                        <div className="absolute right-8 bottom-6 w-48">
+                            {imagePreview ? (
+                                <div className="relative group">
+                                    <img
+                                        src={imagePreview}
+                                        className="w-full h-48 object-cover rounded-lg drop-shadow-lg"
+                                        alt="Uploaded"
+                                    />
+                                    <label className="absolute inset-0 bg-black/50 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity cursor-pointer rounded-lg">
+                                        <FiUpload className="text-white text-3xl" />
+                                        <input
+                                            type="file"
+                                            accept="image/*"
+                                            onChange={handleImageUpload}
+                                            className="hidden"
+                                        />
+                                    </label>
+                                </div>
+                            ) : (
+                                <label className="w-full h-48 border-2 border-dashed border-white/30 rounded-lg flex flex-col items-center justify-center cursor-pointer hover:border-white/60 transition-colors bg-white/10">
+                                    <FiUpload className="text-white text-4xl mb-2" />
+                                    <span className="text-white text-sm">Upload Image</span>
+                                    <input
+                                        type="file"
+                                        accept="image/*"
+                                        onChange={handleImageUpload}
+                                        className="hidden"
+                                    />
+                                </label>
+                            )}
+                        </div>
 
                         {/* Carousel Dots */}
                         <div className="absolute top-6 right-8 flex gap-2">

@@ -3,13 +3,13 @@ import { FaEye, FaEyeSlash, FaFacebook, FaGithub, FaGoogle, FaTwitter } from 're
 import { Link, useNavigate } from 'react-router';
 import Logo from "../../../assets/logo/logo.png";
 import login from "../../../assets/Auth/login.png"
-// import loginDark from "../../../assets/Auth/login_dark.png"
-import useAxiosPublic from '../../../Hooks/useAxiosPublic';
+//import loginDark from "../../../assets/Auth/login_dark.png"
+import UseAxiosPublic from '../../../Hooks/UseAxiosPublic';
 import { toast } from 'react-toastify';
 
 const Login = () => {
     const [showPassword, setShowPassword] = useState(false);
-    const axiosPublic = useAxiosPublic();
+    const axiosPublic = UseAxiosPublic();
     const navigate = useNavigate();
 
     const handleLogin = async (e) => {
@@ -159,9 +159,9 @@ const Login = () => {
 
                     {/* Divider */}
                     <div className="flex items-center">
-                        <hr className="flex-grow border-accent" />
+                        <hr className="grow border-accent" />
                         <span className="mx-4 text-primary">or</span>
-                        <hr className="flex-grow border-accent" />
+                        <hr className="grow border-accent" />
                     </div>
 
                     {/* Social Login */}
