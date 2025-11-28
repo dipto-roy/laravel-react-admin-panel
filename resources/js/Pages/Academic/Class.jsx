@@ -2,70 +2,72 @@ import AppLayout from '../../Layouts/AppLayout';
 import { Head, useForm } from '@inertiajs/react';
 import { useState } from 'react';
 import { toast } from 'react-toastify';
-import { FiX, FiEdit2, FiTrash2, FiBookOpen } from 'react-icons/fi';
+import { FiX, FiEdit2, FiTrash2 } from 'react-icons/fi';
 
-export default function Course({ courses, pagination }) {
+export default function Class({ classes, pagination }) {
     const [isOpen, setIsOpen] = useState(false);
     const [isEditMode, setIsEditMode] = useState(false);
     const [editingId, setEditingId] = useState(null);
 
     const { data, setData, post, put, delete: destroy, processing, errors, reset } = useForm({
         name: '',
+        code: '',
         description: '',
-        duration: '',
-        fee: '',
+        capacity: '',
+        room_number: '',
     });
 
     const handleSubmit = (e) => {
         e.preventDefault();
         
         if (isEditMode) {
-            put(`/course/${editingId}`, {
+            put(`/class/${editingId}`, {
                 onSuccess: () => {
-                    toast.success('Course updated successfully!');
+                    toast.success('Class updated successfully!');
                     reset();
                     setIsOpen(false);
                     setIsEditMode(false);
                     setEditingId(null);
                 },
                 onError: () => {
-                    toast.error('Failed to update course');
+                    toast.error('Failed to update class');
                 },
             });
         } else {
-            post('/course', {
+            post('/class', {
                 onSuccess: () => {
-                    toast.success('Course created successfully!');
+                    toast.success('Class created successfully!');
                     reset();
                     setIsOpen(false);
                 },
                 onError: () => {
-                    toast.error('Failed to create course');
+                    toast.error('Failed to create class');
                 },
             });
         }
     };
 
-    const handleEdit = (course) => {
+    const handleEdit = (classItem) => {
         setData({
-            name: course.name,
-            description: course.description || '',
-            duration: course.duration || '',
-            fee: course.fee || '',
+            name: classItem.name,
+            code: classItem.code || '',
+            description: classItem.description || '',
+            capacity: classItem.capacity || '',
+            room_number: classItem.room_number || '',
         });
-        setEditingId(course.id);
+        setEditingId(classItem.id);
         setIsEditMode(true);
         setIsOpen(true);
     };
 
     const handleDelete = (id) => {
-        if (confirm('Are you sure you want to delete this course?')) {
-            destroy(`/course/${id}`, {
+        if (confirm('Are you sure you want to delete this class?')) {
+            destroy(`/class/${id}`, {
                 onSuccess: () => {
-                    toast.success('Course deleted successfully!');
+                    toast.success('Class deleted successfully!');
                 },
                 onError: () => {
-                    toast.error('Failed to delete course');
+                    toast.error('Failed to delete class');
                 },
             });
         }
@@ -80,66 +82,69 @@ export default function Course({ courses, pagination }) {
 
     return (
         <AppLayout>
-            <Head title="Courses" />
+            <Head title="Classes" />
 
             <div className="p-3 sm:p-5">
                 <div className="flex flex-col sm:flex-row justify-between items-stretch sm:items-center gap-3 mb-6 bg-secondary p-4 rounded-lg shadow">
-                    <h1 className="text-xl sm:text-2xl font-bold text-primary-content">🎓 Courses</h1>
+                    <h1 className="text-xl sm:text-2xl font-bold text-primary-content">📚 Classes</h1>
                     <button
                         onClick={() => setIsOpen(true)}
                         className="bg-primary text-white px-4 sm:px-6 py-2 sm:py-2.5 rounded-md hover:bg-primary-hover transition-colors font-semibold"
                     >
-                        + Add Course
+                        + Add Class
                     </button>
                 </div>
 
-                {/* Courses Grid */}
+                {/* Classes Grid */}
                 <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4 sm:gap-6">
-                    {courses?.data?.map((course) => (
+                    {classes?.data?.map((classItem) => (
                         <div
-                            key={course.id}
+                            key={classItem.id}
                             className="bg-base-200 rounded-lg shadow-md hover:shadow-xl transition-all duration-300 overflow-hidden group"
                         >
                             <div className="bg-gradient-to-r from-primary to-primary-hover p-4 text-white">
                                 <div className="flex items-start justify-between">
-                                    <h3 className="text-lg sm:text-xl font-bold flex-1 pr-2">{course.name}</h3>
-                                    <FiBookOpen size={24} className="opacity-80" />
+                                    <h3 className="text-lg sm:text-xl font-bold flex-1 pr-2">{classItem.name}</h3>
+                                    {classItem.code && (
+                                        <span className="bg-white/20 px-2 py-1 rounded text-xs font-semibold">
+                                            {classItem.code}
+                                        </span>
+                                    )}
                                 </div>
                             </div>
                             
                             <div className="p-4 space-y-3">
-                                {course.description && (
-                                    <p className="text-sm text-primary-content/80 line-clamp-3">
-                                        {course.description}
+                                {classItem.description && (
+                                    <p className="text-sm text-primary-content/80 line-clamp-2">
+                                        {classItem.description}
                                     </p>
                                 )}
                                 
-                                <div className="space-y-2">
-                                    {course.duration && (
-                                        <div className="flex items-center justify-between text-sm">
-                                            <span className="text-primary-content/60">Duration:</span>
-                                            <span className="font-semibold text-primary">{course.duration}</span>
+                                <div className="space-y-2 text-sm">
+                                    {classItem.capacity && (
+                                        <div className="flex items-center justify-between">
+                                            <span className="text-primary-content/70">Capacity:</span>
+                                            <span className="font-semibold text-primary">{classItem.capacity}</span>
                                         </div>
                                     )}
-                                    
-                                    {course.fee && (
-                                        <div className="flex items-center justify-between text-sm">
-                                            <span className="text-primary-content/60">Fee:</span>
-                                            <span className="font-bold text-success">${course.fee}</span>
+                                    {classItem.room_number && (
+                                        <div className="flex items-center justify-between">
+                                            <span className="text-primary-content/70">Room:</span>
+                                            <span className="font-semibold text-primary">{classItem.room_number}</span>
                                         </div>
                                     )}
                                 </div>
 
                                 <div className="flex gap-2 pt-3 border-t border-accent">
                                     <button
-                                        onClick={() => handleEdit(course)}
+                                        onClick={() => handleEdit(classItem)}
                                         className="flex-1 bg-primary/10 text-primary hover:bg-primary hover:text-white px-3 py-2 rounded transition-colors flex items-center justify-center gap-2 font-medium text-sm"
                                     >
                                         <FiEdit2 size={16} />
                                         Edit
                                     </button>
                                     <button
-                                        onClick={() => handleDelete(course.id)}
+                                        onClick={() => handleDelete(classItem.id)}
                                         className="flex-1 bg-error/10 text-error hover:bg-error hover:text-white px-3 py-2 rounded transition-colors flex items-center justify-center gap-2 font-medium text-sm"
                                     >
                                         <FiTrash2 size={16} />
@@ -152,16 +157,16 @@ export default function Course({ courses, pagination }) {
                 </div>
 
                 {/* Empty State */}
-                {(!courses?.data || courses.data.length === 0) && (
+                {(!classes?.data || classes.data.length === 0) && (
                     <div className="text-center py-16 bg-base-200 rounded-lg">
-                        <div className="text-6xl mb-4">🎓</div>
-                        <h3 className="text-xl font-semibold text-primary-content mb-2">No Courses Yet</h3>
-                        <p className="text-primary-content/60 mb-4">Get started by creating your first course</p>
+                        <div className="text-6xl mb-4">📚</div>
+                        <h3 className="text-xl font-semibold text-primary-content mb-2">No Classes Yet</h3>
+                        <p className="text-primary-content/60 mb-4">Get started by creating your first class</p>
                         <button
                             onClick={() => setIsOpen(true)}
                             className="bg-primary text-white px-6 py-2 rounded-md hover:bg-primary-hover transition-colors"
                         >
-                            Create Course
+                            Create Class
                         </button>
                     </div>
                 )}
@@ -172,7 +177,7 @@ export default function Course({ courses, pagination }) {
                         {Array.from({ length: pagination.last_page }, (_, i) => i + 1).map((page) => (
                             <a
                                 key={page}
-                                href={`/course?page=${page}`}
+                                href={`/class?page=${page}`}
                                 className={`px-4 py-2 rounded border ${
                                     page === pagination.current_page
                                         ? 'bg-primary text-white border-primary'
@@ -193,7 +198,7 @@ export default function Course({ courses, pagination }) {
                         {/* Header */}
                         <div className="bg-gradient-to-r from-primary to-primary-hover p-4 sm:p-5 flex items-center justify-between">
                             <h2 className="text-lg sm:text-xl font-bold text-white">
-                                {isEditMode ? '✏️ Edit Course' : '➕ Create New Course'}
+                                {isEditMode ? '✏️ Edit Class' : '➕ Create New Class'}
                             </h2>
                             <button
                                 onClick={closeModal}
@@ -205,19 +210,37 @@ export default function Course({ courses, pagination }) {
 
                         {/* Form */}
                         <form onSubmit={handleSubmit} className="p-4 sm:p-6 space-y-4 overflow-y-auto max-h-[calc(95vh-180px)]">
-                            <div>
-                                <label className="block text-sm sm:text-base font-semibold mb-2 text-primary-content">
-                                    Course Name <span className="text-error">*</span>
-                                </label>
-                                <input
-                                    type="text"
-                                    value={data.name}
-                                    onChange={(e) => setData('name', e.target.value)}
-                                    className="w-full h-11 sm:h-12 px-4 rounded-lg border-2 border-accent focus:border-primary focus:ring-2 focus:ring-primary/20 outline-none transition-all bg-base-200 text-primary-content"
-                                    placeholder="e.g., Web Development Bootcamp"
-                                    required
-                                />
-                                {errors.name && <p className="text-error text-sm mt-1">{errors.name}</p>}
+                            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                                <div>
+                                    <label className="block text-sm sm:text-base font-semibold mb-2 text-primary-content">
+                                        Class Name <span className="text-error">*</span>
+                                    </label>
+                                    <input
+                                        type="text"
+                                        value={data.name}
+                                        onChange={(e) => setData('name', e.target.value)}
+                                        className="w-full h-11 sm:h-12 px-4 rounded-lg border-2 border-accent focus:border-primary focus:ring-2 focus:ring-primary/20 outline-none transition-all bg-base-200 text-primary-content"
+                                        placeholder="e.g., Grade 10"
+                                        required
+                                    />
+                                    {errors.name && <p className="text-error text-sm mt-1">{errors.name}</p>}
+                                </div>
+
+                                <div>
+                                    <label className="block text-sm sm:text-base font-semibold mb-2 text-primary-content">
+                                        Class Code <span className="text-error">*</span>
+                                    </label>
+                                    <input
+                                        type="text"
+                                        value={data.code}
+                                        onChange={(e) => setData('code', e.target.value)}
+                                        className="w-full h-11 sm:h-12 px-4 rounded-lg border-2 border-accent focus:border-primary focus:ring-2 focus:ring-primary/20 outline-none transition-all bg-base-200 text-primary-content uppercase"
+                                        placeholder="e.g., G10A"
+                                        maxLength="20"
+                                        required
+                                    />
+                                    {errors.code && <p className="text-error text-sm mt-1">{errors.code}</p>}
+                                </div>
                             </div>
 
                             <div>
@@ -228,8 +251,8 @@ export default function Course({ courses, pagination }) {
                                     value={data.description}
                                     onChange={(e) => setData('description', e.target.value)}
                                     className="w-full px-4 py-3 rounded-lg border-2 border-accent focus:border-primary focus:ring-2 focus:ring-primary/20 outline-none transition-all bg-base-200 text-primary-content resize-none"
-                                    rows="4"
-                                    placeholder="Brief description of the course"
+                                    rows="3"
+                                    placeholder="Brief description of the class"
                                 />
                                 {errors.description && <p className="text-error text-sm mt-1">{errors.description}</p>}
                             </div>
@@ -237,32 +260,30 @@ export default function Course({ courses, pagination }) {
                             <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                                 <div>
                                     <label className="block text-sm sm:text-base font-semibold mb-2 text-primary-content">
-                                        Duration
+                                        Capacity
                                     </label>
                                     <input
-                                        type="text"
-                                        value={data.duration}
-                                        onChange={(e) => setData('duration', e.target.value)}
+                                        type="number"
+                                        value={data.capacity}
+                                        onChange={(e) => setData('capacity', e.target.value)}
                                         className="w-full h-11 sm:h-12 px-4 rounded-lg border-2 border-accent focus:border-primary focus:ring-2 focus:ring-primary/20 outline-none transition-all bg-base-200 text-primary-content"
-                                        placeholder="e.g., 6 months"
+                                        placeholder="e.g., 30"
                                     />
-                                    {errors.duration && <p className="text-error text-sm mt-1">{errors.duration}</p>}
+                                    {errors.capacity && <p className="text-error text-sm mt-1">{errors.capacity}</p>}
                                 </div>
 
                                 <div>
                                     <label className="block text-sm sm:text-base font-semibold mb-2 text-primary-content">
-                                        Fee ($)
+                                        Room Number
                                     </label>
                                     <input
-                                        type="number"
-                                        value={data.fee}
-                                        onChange={(e) => setData('fee', e.target.value)}
+                                        type="text"
+                                        value={data.room_number}
+                                        onChange={(e) => setData('room_number', e.target.value)}
                                         className="w-full h-11 sm:h-12 px-4 rounded-lg border-2 border-accent focus:border-primary focus:ring-2 focus:ring-primary/20 outline-none transition-all bg-base-200 text-primary-content"
-                                        placeholder="e.g., 999"
-                                        min="0"
-                                        step="0.01"
+                                        placeholder="e.g., A-101"
                                     />
-                                    {errors.fee && <p className="text-error text-sm mt-1">{errors.fee}</p>}
+                                    {errors.room_number && <p className="text-error text-sm mt-1">{errors.room_number}</p>}
                                 </div>
                             </div>
 
@@ -280,7 +301,7 @@ export default function Course({ courses, pagination }) {
                                     disabled={processing}
                                     className="w-full sm:w-auto px-6 py-2.5 bg-gradient-to-r from-primary to-primary-hover hover:from-primary-hover hover:to-primary text-white rounded-lg disabled:opacity-50 transition-all font-semibold"
                                 >
-                                    {processing ? 'Saving...' : isEditMode ? 'Update Course' : 'Create Course'}
+                                    {processing ? 'Saving...' : isEditMode ? 'Update Class' : 'Create Class'}
                                 </button>
                             </div>
                         </form>

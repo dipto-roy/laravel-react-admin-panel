@@ -11,7 +11,10 @@ class Subject extends Model
 
     protected $fillable = [
         'name',
-        'description',
         'code',
+        'description',
+        'credits',
+        'department_id',
+        'is_active',
     ];
 }
